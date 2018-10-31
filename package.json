@@ -2,6 +2,7 @@
   "name": "mirror",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://localhost/mirror/build",
   "dependencies": {
     "react": "^16.6.0",
     "react-dom": "^16.6.0",

@@ -25,3 +25,30 @@ export const CurrentDate = styled.div`
 	padding: 20px 0;
 	font-size: 3em;
 `;
+
+function getProgress(seconds) {
+	if (seconds >= 45) {
+		return 'white white white white';
+	} else if (seconds >= 30) {
+		return 'white white white transparent';
+	} else if (seconds >= 15) {
+		return 'white white transparent transparent';
+	} else if (seconds > 0) {
+		return 'white transparent transparent transparent';
+	} else {
+		return 'transparent transparent transparent transparent';
+	}
+}
+
+export const Seconds = styled.div`
+	display: inline-block;
+	background: transparent;
+	border: 2px solid black; /* color not required, may show device fail */
+	border-color: ${props => getProgress(props.seconds)};
+	transition: border-color 10s;
+	height: 20px;
+	width: 20px;
+	border-radius: 50%; /* more than 50, shape-size adjustment irrelevant */
+	transform: rotate(45deg); /* transform optional */
+	margin-left: 10px;
+`;

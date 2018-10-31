@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TimeWrapper } from "./components";
+import { TimeWrapper, Seconds } from "./components";
 
 function getMins(time) {
 	const minutes = String(time.getMinutes());
@@ -30,7 +30,7 @@ function Time () {
 	
 	return (
 		<TimeWrapper>
-			{getHours(time).t}:{getMins(time)} {getHours(time).a}
+			{getHours(time).t}:{getMins(time)} {getHours(time).a}<Seconds seconds={time.getSeconds()}/>
 		</TimeWrapper>
 	)
 }

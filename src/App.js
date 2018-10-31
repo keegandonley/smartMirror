@@ -3,7 +3,7 @@ import { Header, Greeting, DayGlance, CurrentDate } from './components';
 import { name } from './config-public';
 import Clock from './clock';
 import Axios from 'axios';
-import { darkSkyKey } from './config-private';
+import { darkSkyUrl } from './config-private';
 
 function getGreeting(hour) {
   switch(hour) {
@@ -74,8 +74,8 @@ function month(time) {
 class App extends Component {
 
   async getWeather() {
-    const res = await Axios.get(`https://api.darksky.net/forecast/${darkSkyKey}/37.8267,-122.4233`);
-    console.log(res);
+    // const res = await Axios.get(darkSkyUrl);
+    // console.log(res);
   }
   componentDidMount() {
     this.getWeather();

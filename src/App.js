@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Header, Greeting, DayGlance, CurrentDate } from './components';
+import { Header, Greeting, DayGlance, CurrentDate, CurrentWeather, Stats, WeatherSummary } from './components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudSun, faThermometerEmpty, faThermometerQuarter, faThermometerHalf, faThermometerThreeQuarters, faThermometerFull, faTint, faSun, faMoon, faSnowflake, faWind, faCloud, faCloudMoon, faSpinner } from '@fortawesome/pro-light-svg-icons';
 import { name } from './config-public';
 import Clock from './clock';
 import Axios from 'axios';
@@ -71,11 +73,53 @@ function month(time) {
     default: return '';
   }
 }
+
+function getTherm(temp) {
+  if (temp > 90) {
+    return faThermometerFull;
+  } else if (temp > 75) {
+    return faThermometerThreeQuarters;
+  } else if (temp > 60) {
+    return faThermometerHalf;
+  } else if (temp > 50) {
+    return faThermometerQuarter;
+  }
+  return faThermometerEmpty
+}
+
+function getWeatherIcon(icon) {
+  if (icon === 'clear-day') {
+    return faSun;
+  } else if (icon === 'clear-night') {
+    return faMoon;
+  } else if (icon === 'rain') {
+    return faTint;
+  } else if (icon === 'snow') {
+    return faSnowflake;
+  } else if (icon === 'sleet') {
+    return faSnowflake;
+  } else if (icon === 'wind') {
+    return faWind;
+  } else if (icon === 'fog') {
+    return faCloud;
+  } else if (icon === 'cloudy') {
+    return faCloud;
+  } else if (icon === 'partly-cloudy') {
+    return faCloudSun;
+  } else if (icon === 'partly-cloudy-night') {
+    return faCloudMoon;
+  }
+}
 class App extends Component {
+  state = {
+    weather: null,
+    loading: true,
+  }
 
   async getWeather() {
-    // const res = await Axios.get(darkSkyUrl);
-    // console.log(res);
+    const res = await Axios.get(darkSkyUrl);
+    console.log(res.data);
+    this.setState({ weather: res.data, loading: false })
   }
   componentDidMount() {
     this.getWeather();
@@ -89,6 +133,7 @@ class App extends Component {
   }
 
   render() {
+    const { loading, weather } = this.state;
     const time = new Date();
     const hour = time.getHours();
     return (
@@ -99,9 +144,24 @@ class App extends Component {
         </Header>
         <DayGlance>
           <CurrentDate>
-            Today is <strong>{day(time)} {month(time)} {time.getDate()}</strong>, {time.getFullYear()}
+            Today is <strong>{day(time)} {month(time)} {time.getDate()}</strong>
+            <br />
+            {!loading && weather.hourly && (
+              <WeatherSummary>
+                It will be {weather.hourly.summary.toLowerCase()}
+              </WeatherSummary>
+            )}
           </CurrentDate>
-
+          <CurrentWeather>
+            <FontAwesomeIcon spin={loading} icon={!loading ? getWeatherIcon(weather.currently.icon) : faSpinner} />
+            {
+              !loading && weather.currently && (
+                <Stats>
+                  <FontAwesomeIcon icon={getTherm(weather.currently.temperature)} />{Math.round(weather.currently.temperature)}°F <FontAwesomeIcon icon={faTint} />{weather.currently.precipIntensity}%
+                </Stats>
+              )
+            }
+          </CurrentWeather>
         </DayGlance>
       </div>
     );

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Header = styled.div`
 	display: flex;
+	align-items: center;
 `;
 
 export const Greeting = styled.div`
@@ -19,6 +20,7 @@ export const DayGlance = styled.div`
 	display: flex;
 	margin: 10px 20px 0 20px;
 	border-top: 1px solid rgba(255, 255, 255, 0.5);
+	align-items: center;
 `;
 
 export const CurrentDate = styled.div`
@@ -52,3 +54,37 @@ export const Seconds = styled.div`
 	transform: rotate(45deg); /* transform optional */
 	margin-left: 10px;
 `;
+
+export const CurrentWeather = styled.div`
+	margin-left: auto;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	
+	& > svg {
+		font-size: 6em;
+		margin-left: auto;
+	}
+`;
+
+export const Stats = styled.div`
+	text-align: center;
+	font-size: 3.5em;
+	font-weight: 300;
+	display: flex;
+	align-items: center;
+
+	& > svg {
+		font-size: 0.8em;
+		margin-right: 10px;
+	}
+
+	& > svg:not(:first-child) {
+		padding-left: 20px;
+	}
+`;
+
+export const WeatherSummary = styled.div`
+	font-size: 0.85em;
+	padding-left: 7px;
+`

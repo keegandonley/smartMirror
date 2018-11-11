@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Header, Greeting, DayGlance, CurrentDate, CurrentWeather, Stats, WeatherSummary } from './components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudSun, faThermometerEmpty, faThermometerQuarter, faThermometerHalf, faThermometerThreeQuarters, faThermometerFull, faTint, faSun, faMoon, faSnowflake, faWind, faCloud, faCloudMoon, faSpinner } from '@fortawesome/pro-light-svg-icons';
+import { faThermometerEmpty, faThermometerQuarter, faThermometerHalf, faThermometerThreeQuarters, faThermometerFull, faTint, faSpinner } from '@fortawesome/pro-light-svg-icons';
 import { name } from './config-public';
 import Clock from './clock';
 import Axios from 'axios';
 import { darkSkyUrl } from './config-private';
+import MultiDay from './multiDay';
+import { getWeatherIcon } from './utils';
 
 function getGreeting(hour) {
   switch(hour) {
@@ -87,29 +89,6 @@ function getTherm(temp) {
   return faThermometerEmpty
 }
 
-function getWeatherIcon(icon) {
-  if (icon === 'clear-day') {
-    return faSun;
-  } else if (icon === 'clear-night') {
-    return faMoon;
-  } else if (icon === 'rain') {
-    return faTint;
-  } else if (icon === 'snow') {
-    return faSnowflake;
-  } else if (icon === 'sleet') {
-    return faSnowflake;
-  } else if (icon === 'wind') {
-    return faWind;
-  } else if (icon === 'fog') {
-    return faCloud;
-  } else if (icon === 'cloudy') {
-    return faCloud;
-  } else if (icon === 'partly-cloudy') {
-    return faCloudSun;
-  } else if (icon === 'partly-cloudy-night') {
-    return faCloudMoon;
-  }
-}
 class App extends Component {
   state = {
     weather: null,
@@ -118,7 +97,6 @@ class App extends Component {
 
   async getWeather() {
     const res = await Axios.get(darkSkyUrl);
-    console.log(res.data);
     this.setState({ weather: res.data, loading: false })
   }
   componentDidMount() {
@@ -130,6 +108,20 @@ class App extends Component {
 
   componentWillUnmount() {
     clearInterval(this._weatherRefresh);
+  }
+
+  get5Day({ data }) {
+    const res = [];
+    for (let i = 0; i < Math.min(data.length, 5); i++) {
+      res.push({
+        date: new Date(data[i].time),
+        icon: data[i].icon,
+        precipIntensity: data[i].precipIntensity,
+        temperatureHigh: data[i].temperatureHigh,
+        temperatureLow: data[i].temperatureLow,
+      });
+    }
+    return res;
   }
 
   render() {
@@ -151,13 +143,16 @@ class App extends Component {
                 It will be {weather.hourly.summary.toLowerCase()}
               </WeatherSummary>
             )}
+            <MultiDay
+              weather={this.get5Day(weather && weather.daily ? weather.daily : { data: [] })}
+            />
           </CurrentDate>
           <CurrentWeather>
             <FontAwesomeIcon spin={loading} icon={!loading ? getWeatherIcon(weather.currently.icon) : faSpinner} />
             {
               !loading && weather.currently && (
                 <Stats>
-                  <FontAwesomeIcon icon={getTherm(weather.currently.temperature)} />{Math.round(weather.currently.temperature)}°F <FontAwesomeIcon icon={faTint} />{weather.currently.precipIntensity}%
+                  <FontAwesomeIcon icon={getTherm(weather.currently.temperature)} />{Math.round(weather.currently.temperature)}°F <FontAwesomeIcon icon={faTint} />{Math.round(weather.currently.precipIntensity)}%
                 </Stats>
               )
             }

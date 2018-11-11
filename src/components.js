@@ -47,7 +47,7 @@ export const Seconds = styled.div`
 	background: transparent;
 	border: 2px solid black; /* color not required, may show device fail */
 	border-color: ${props => getProgress(props.seconds)};
-	transition: border-color 10s;
+	transition: border-color ${props => props.seconds < 15 ? 10 : 15}s;
 	height: 20px;
 	width: 20px;
 	border-radius: 50%; /* more than 50, shape-size adjustment irrelevant */
@@ -87,4 +87,37 @@ export const Stats = styled.div`
 export const WeatherSummary = styled.div`
 	font-size: 0.85em;
 	padding-left: 7px;
-`
+`;
+
+export const MultiDayWrapper = styled.div`
+	border-radius: 4px;
+	margin-top: 10px;
+	display: flex;
+`;
+
+export const DayWrapper = styled.div`
+	border: 1px solid white;
+	border-radius: 6px;
+	width: 100%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 5px;
+	font-size: 0.6em;
+	text-align: center;
+
+	&:first-child {
+		margin-left: 10px;
+	}
+
+	&:last-child {
+		margin-right: 10px;
+	}
+
+	& svg {
+		font-size: 1.5em;
+	}
+`;
